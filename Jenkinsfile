@@ -26,5 +26,14 @@ pipeline {
               sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
             }
         }
+        // No need to occupy a node
+        stage("Quality Gate") {
+          steps {
+            timeout(time: 1, unit: 'HOURS') {
+              // Just in case something goes wrong, pipeline will be killed after a timeout
+              waitForQualityGate abortPipeline: true
+            }
+          }
+        }
     }
 }
